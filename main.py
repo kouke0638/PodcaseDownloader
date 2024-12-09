@@ -2,24 +2,24 @@ import feedparser
 import requests
 import os
 
-# RSS Feed URL，請將 <YourPodcaseRSSFeedLink> 替換成你的 Podcast RSS Feed 連結
-# 可以從 https://castos.com/tools/find-podcast-rss-feed/ 找到你的 Podcast RSS Feed 連結
+# RSS Feed URL, replace <YourPodcaseRSSFeedLink> with your own Podcast RSS Feed link
+# You can find your Podcast RSS Feed link at https://castos.com/tools/find-podcast-rss-feed/
 rss_url = '<YourPodcaseRSSFeedLink>'
 
-# 解析 RSS feed
+# Parse the RSS feed
 feed = feedparser.parse(rss_url)
 
-# 確保 'files' 資料夾存在
+# Ensure the 'files' directory exists
 if not os.path.exists('files'):
     os.makedirs('files')
 
-# 下載每一個集的 MP3
+# Download the MP3 for each episode
 for entry in feed.entries:
-    mp3_url = entry.enclosures[0]['href']  # 獲取 MP3 檔案的 URL
+    mp3_url = entry.enclosures[0]['href']  # Get the URL of the MP3 file
     response = requests.get(mp3_url, stream=True)
     filename = os.path.join('files', f"{entry.title}.mp3")
 
-    # 將 MP3 保存到檔案
+    # Save the MP3 to a file
     with open(filename, 'wb') as file:
         for chunk in response.iter_content(chunk_size=1024):
             file.write(chunk)
